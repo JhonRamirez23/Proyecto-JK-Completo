@@ -1,0 +1,4 @@
+# Archivos que no quiero tener control de version
+A tener en cuenta para el proyecto.txt
+
+node_modules/
