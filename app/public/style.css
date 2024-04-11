@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* */
+:root {
+    --violeta-grad: linear-gradient(151deg, rgba(77,22,88,1) 0%, rgba(180,28,128,1) 51%, rgba(228,13,110,1) 100%);
+    --blue-grad: linear-gradient(90deg, rgba(21,45,56,1) 0%, rgba(57,98,128,1) 35%, rgba(100,158,183,1) 100%);
+    --purpura: #4D1658;
+    --montserrat: 'montserrat';
+}
+
+body {
+    position: relative;
+    width: auto;
+    height: 100vh;
+    background: var(--violeta-grad);
+    font-family: var(--montserrat);
+}
+
+.forms {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 25%;
+    height: 50%;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f2f2f2;
+    border-radius: 1rem;
+    box-shadow: 5px 5px 20px #000;
+}
+
+.text-container {
+    text-align: center;
+    width: 100%;
+
+    h2 {
+        font-size: 2.5rem;
+        color: var(--purpura);
+        font-weight: 600;
+    }
+    p {
+        font-size: 1.2rem;
+        font-weight: 300;
+    }
+}
+
+.formulario {
+    text-align: center;
+    width: 100%;
+    margin: 1.5rem;
+
+    label {
+        font-size: 1.2rem;
+        margin-left: 1rem;
+    }
+
+    input {
+        font-size: 1rem;
+        border: none;
+        border-radius: 0.3rem;
+        padding: 0.2rem;
+    }
+}
