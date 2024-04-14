@@ -1,0 +1,47 @@
+/*Configuracion inicial*/
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* */
+:root {
+    --violeta-grad: linear-gradient(151deg, rgba(77,22,88,1) 0%, rgba(180,28,128,1) 51%, rgba(228,13,110,1) 100%);
+    --blue-grad: linear-gradient(90deg, rgba(21,45,56,1) 0%, rgba(57,98,128,1) 35%, rgba(100,158,183,1) 100%);
+    --purpura: #4D1658;
+    --montserrat: 'montserrat';
+}
+
+html {
+    font-size: 62.5%;
+}
+
+/* Módulo admin */
+
+body {
+    font-family: var(--montserrat);
+}
+
+.container-ad {
+    width: 50%;
+    height: 50%;
+    margin: 0 auto;
+    text-align: center;
+    
+    h1 {
+        font-size: 3rem;
+        color: var(--purpura);
+    }
+
+    .btn {
+        background-color: var(--purpura);
+        border: none;
+        color: #fff;
+        padding: 1rem;
+        border-radius: 1rem;
+    }
+
+    .btn:hover {
+        cursor: pointer;
+        background-color: #642770;
+        transition: all 0.1s ease;
+    }
+  }
+  
