@@ -30,9 +30,14 @@ async function login(req, res){
 
     //Verifica si el usuario existe
     const usuarioRevisar = usuarios.find(usuario => usuario.user === user);
-    if(!usuarioRevisar || !usuarioRevisar.password) {
-        return res.status(400).send({ status: "Error", message: "Usuario o contraseña incorrectos" });
-    } res.send({ status: "OK", message: "Usuario asignado", redirect: '/admin' });
+    const usuarioRevisarP = usuarios.find(usuario => usuario.password === password);
+
+    if(!usuarioRevisar || !usuarioRevisarP) {
+        return res.status(400).send({
+            status: "Error", message: "Usuario o contraseña incorrectos"
+        });
+    } 
+    res.send({ status: "OK", message: "Usuario asignado", redirect: '/admin' });
 
     //Se verifica que la contraseña encriptada coincida con la del usuario
     // const loginCorrecto = await bcrypt.compare(password, usuarioRevisar.password);
