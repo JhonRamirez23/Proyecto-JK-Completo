@@ -1,13 +1,28 @@
-// function soloAdmin (req, res, next) {
-//     const cookieJWT = req.headers.cookie.split(';')
-//     console.log('COOKIE', cookieJWT);
-// }
+function Admin (req, res, next) {
+    const cookieJWT = req.headers.cookie.split(';')
+    console.log('COOKIE', cookieJWT);
+}
 
-// function soloPublic (req, res, next) {
+function Public (req, res, next) {
 
-// }
+}
 
-// export const methods = {
-//     soloAdmin,
-//     soloPublic,
-// }
+function Employes (req, res, next) {
+
+}
+
+function Inventory(req, res, next) {
+
+}
+
+function Sales (req, res, next) {
+
+}
+
+export const methods = {
+    Admin,
+    Public,
+    Employes,
+    Inventory,
+    Sales,
+}

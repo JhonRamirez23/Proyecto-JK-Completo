@@ -21,21 +21,19 @@ async function login(req, res){
     const user = req.body.user;
     const password = req.body.password;
 
-    //Validación de datos
+    //Validación de usuario y contraseña
     if (!user || !password) {
         return res.status(400).send({
             status: "Error", message: "Los campos están incompletos"
         });
     }
 
-    //Verifica si el usuario existe
+    //Verifica si el usuario y la contraseña existen
     const usuarioRevisar = usuarios.find(usuario => usuario.user === user);
-    const usuarioRevisarP = usuarios.find(usuario => usuario.password === password);
+    //const usuarioRevisarP = usuarios.find(usuario => usuario.password === password);
 
-    if(!usuarioRevisar || !usuarioRevisarP) {
-        return res.status(400).send({
-            status: "Error", message: "Usuario o contraseña incorrectos"
-        });
+    if(!usuarioRevisar) {
+        return res.status(400).send({ status: "Error", message: "Usuario o contraseña incorrectos"});
     } 
     res.send({ status: "OK", message: "Usuario asignado", redirect: '/admin' });
 
