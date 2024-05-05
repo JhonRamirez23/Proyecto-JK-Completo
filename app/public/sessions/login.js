@@ -14,9 +14,8 @@ document.getElementById('formulario-login').addEventListener('submit', async (e)
         })
     });
 
-    if(!res.ok) {
-        return mensajeError.classList.toggle('hide-text', false);
-    }
+    if(!res.ok) return mensajeError.classList.toggle('hide-text', false);
+    
     const resJson = await res.json();
     if (resJson.redirect) {
         window.location.href = resJson.redirect;

@@ -1,12 +1,16 @@
 //Uso de import según las reglas de ES6
 import express from 'express';
 
+//Imprtamos el cookie-parser para leer los datos de las cookies
+import cookieParser from 'cookie-parser';
+
 //Fix para __dirname
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 //Se importan los métodos que vienen de auth.controllers.js
 import { methods as authentication } from './controllers/auth.controller.js';
+//import { methods as authorization } from './middlewares/authorization.js';
 
 //El __dirname es para cuando se especifica en el archivo package.json el "type": "module"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +24,7 @@ console.log("Servidor escuchando en puerto", app.get('port'));
 //Configuración
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
+//app.use(cookieParser());
 
 
 //Rutas
@@ -36,10 +41,12 @@ app.get('/register', (req, res) => {
 })
 
 //Ruta del módulo admin
-app.get('/admin', (req, res) => {
+app.get('/admin', /*authorization.soloAdmin,*/ (req, res) => {
     res.sendFile(__dirname + '/pages/admin/admin.html');
 })
 
 //Ruta de la API
 app.post('/api/register', authentication.register);
 app.post('/api/login', authentication.login);
+
+//Middlewares -> Revisa si tiene acceso o no
