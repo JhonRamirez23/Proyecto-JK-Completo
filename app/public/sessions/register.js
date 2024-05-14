@@ -1,4 +1,4 @@
-const mensajeError = document.getElementsByClassName('error')[0];
+const errorUsuario = document.getElementsByClassName('error')[0];
 
 document.getElementById('form-container').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -10,16 +10,20 @@ document.getElementById('form-container').addEventListener('submit', async (e) =
         },
         body: JSON.stringify({
             user: e.target.children.user.value,
+            nip: e.target.children.nip.value,
             email: e.target.children.email.value,
             password: e.target.children.password.value,
         })
     });
 
-    if(!resp.ok) return mensajeError.classList.toggle('hide-text', false);
-    const resJson = await resp.json();
+    if(!resp.ok) {
 
-    if (resJson.redirect) {
-        window.location.href = resJson.redirect;
+        //Muestra el error en formato HTML
+        const errorHTML = await resp.text();
+        console.error(errorHTML); //Muestra el mensaje de errror en la consola
+        return errorUsuario.classList.toggle('hide-text', false);
+    } else {
+        window.location.href = '/login';
     }
 
-})
+});

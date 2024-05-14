@@ -1,99 +1,98 @@
-//Se importa la librería de encriptación de contraseñas
+//Se importa bcrypt para encriptar la contraseña
 import bcrypt from 'bcryptjs';
 
+//Prueba para traer la config de la BD
+import getConnection from '../models/mysql/db.js';
+
 //Se importa la librería para token de autorización
-import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 //Se importa la encriptación de los datos
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-
-//Usuarios de prueba
-const usuarios = [
-    { user: "John" },
-    { email: "prueba@gmail.com" },
-    { password: "hola" }
-];
-
 async function login(req, res){
-    const user = req.body.user;
+    const nip = req.body.nip;
     const password = req.body.password;
-
-    //Validación de usuario y contraseña
-    if (!user || !password) {
-        return res.status(400).send({
-            status: "Error", message: "Los campos están incompletos"
-        });
+    
+    //Validación de NIP y contraseña
+    if (!nip || !password) {
+        return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
     }
-
-    //Verifica si el usuario y la contraseña existen
-    const usuarioRevisar = usuarios.find(usuario => usuario.user === user);
-    //const usuarioRevisarP = usuarios.find(usuario => usuario.password === password);
-
-    if(!usuarioRevisar) {
-        return res.status(400).send({ status: "Error", message: "Usuario o contraseña incorrectos"});
-    } 
-    res.send({ status: "OK", message: "Usuario asignado", redirect: '/admin' });
-
-    //Se verifica que la contraseña encriptada coincida con la del usuario
-    // const loginCorrecto = await bcrypt.compare(password, usuarioRevisar.password);
     
-    // Token de autorización
-    // if (!loginCorrecto) {
-    //     return res.status(400).send({
-    //         status: "Error", message: "Validación incorrecta"
-    //     });
-    // }
-    
+    //Verifica si el usuario existe en la BD
+    try {
+        const conn = await getConnection(); //Conector a la BD
+        const [usuarioExiste] = await conn.promise().query('SELECT * FROM usuarios WHERE nip = ?', [nip]);
 
-    // const token = jsonwebtoken.sign(
-    //     { user: usuarioRevisar.user },
-    //     process.env.JWT_SECRET,
-    //     { expiresIn: process.env.JWT_EXPIRATION });
+        if (usuarioExiste.length === 0) {
+            return res.status(400).send({ status: "Error", message: "Usuario no existe"});
+        }
 
-    //     const cookieOption = {
-    //     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000),
-    //     path: '/'
-    //     }
-    //     res.cookie('jwt', token, cookieOption); 
-    //     res.send({ status: "OK", message: "Usuario asignado", redirect: '/admin' });
+        //Ingresa en una constante la contraseña para usarla en la encriptación.
+        const hashPassword = usuarioExiste[0].password;
+
+        //Verifica que la contraseña encriptada sea correcta.
+        const loginCorrecto = await bcrypt.compare(password, hashPassword);
+        
+        //Valida el ingreso
+        if (!loginCorrecto) {
+            return res.status(400).send({ status: "Error", message: "Usuario o contraseña incorrecta" });
+        }
+        res.send({ status: "OK", redirect: '/admin'});
+    } catch (err) {
+        console.log("Error al procesar la solicitud");
+        res.status(500).send({ status: "Error", message: "Error interno del servidor"});
+    }
 }
 
 async function register(req, res) {
     const user = req.body.user;
+    const nip = req.body.nip;
     const email = req.body.email;
     const password = req.body.password;
 
     //Validación de datos
-    if (!user || !email || !password) {
+    if (!user || !email || !password || !nip) {
         return res.status(400).send({
             status: "Error", message: "Los campos están incompletos"
         });
     }
 
-    //Verifica si el usuario existe
-    const usuarioRevisar = usuarios.find(usuario => usuario.user === user);
-    if(usuarioRevisar) {
-        return res.status(400).send({
-            status: "Error", message: "El usuario ya existe"
-        });
+    //Establece conn como conector de consultas
+    const conn = getConnection();
+
+    ////Verifica si el correo ya existe en la BD
+    const [usuarioExistente] = await conn.promise().query('SELECT * FROM usuarios WHERE email = ?', [email]);
+    if (usuarioExistente.length > 0 ) {
+        return res.status(400).send({ status: "Error", message: "El Email ya existe" });
     }
+
+    /*
+        En código de la consulta, utilizamos conn.promise().query() en lugar de conn.query() para realizar 
+        consultas SQL de forma asíncrona y utilizar await para esperar la respuesta de la base de datos. 
+        Además, utilizamos un bloque try-catch para manejar los errores de forma adecuada.
+    */
+
+    //Si no existe, procede con el registro
 
     //Aquí se encripta las contraseñas
-    // const salt = await bcrypt.genSalt(5);
-    // const hashPassword = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt(5);
+    const hashPassword = await bcrypt.hash(password, salt);
 
     const nuevoUsuario = {
-        user, email, password//: //hashPassword
+        user,
+        nip,
+        email,
+        password: hashPassword
     }
-    
-    usuarios.push(nuevoUsuario);
-    console.log(nuevoUsuario);
-    return res.status(201).send({
-        status: "OK", message: `El usuario ${nuevoUsuario.user} fue creado con éxito`,
-        redirect: "/login"
+
+    conn.query('INSERT INTO usuarios SET ?', nuevoUsuario, async(err, rows) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send({ status: "Error", message: "Error al insertar el usuario en la BD" });
+        }
+        res.redirect('/login');
     });
 }
 

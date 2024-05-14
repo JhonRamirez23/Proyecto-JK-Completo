@@ -1,0 +1,4 @@
+En db.js debo traer los datos desde auth.controllers.js para guardar y/o consultar a la BD y
+regresar los datos a auth.controllers.js.
+
+En auth.controllers.js se crea el login y registro, luego se exporta para usarlo en index.js
