@@ -80,10 +80,10 @@
             </div>
 
             <div class="item">
-                <a href="/data">
+                <a href="/erase">
                     <div class="icon">
                         <i class='bx bx-user'></i>
-                        <div class="title">Consultar</div>
+                        <div class="title">Eliminar</div>
                     </div>                    
                 </a>                                  
                 </a>
@@ -126,6 +126,34 @@
 
     </div>    
     
+    <div class="main-content">
+        <div class="container">
+            <h1>Gestión de usuarios </h1>
+            <p>En esta sección puedes ver los usuarios, administrar productos, consultar ventas y realizar gestión de
+                la empresa.</p>
+
+            <div class="container-img">
+
+                <h2>Subir Archivo</h2>
+                <form id="uploadForm">
+                    <input type="file" id="fileInput" name="file" required>
+                    <button type="submit">Subir</button>
+                </form>
+                
+                <div id="alertContainer"></div>
+            </div>
+
+            <div id="uploadedImages">
+                <h3>Imágenes Subidas:</h3>
+                <div id="imagesContainer"></div>
+            </div>
+            
+        </div>
+    </div>
+
+
+
     <script src="sessions/admin.js"></script>
+    <script src="sessions/images.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ const dbConfig = {
   user: 'root',
   password: '',
   port: 3306,
-  database: 'jk_publicitarios'
+  database: 'jk_db'
 };
 
 const conn = mysql.createConnection(dbConfig);

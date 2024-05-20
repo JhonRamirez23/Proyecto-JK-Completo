@@ -28,7 +28,7 @@
             
             <div class="menu-content">
                 <ul class="menu-list flex">
-                    <li><a href="/add" class="nav-link">/ Agregar empleados</a></li>
+                    <li><a href="/add" class="nav-link">/ Eliminar empleados</a></li>
                     <li><a href="#" class="nav-link">Gerencia</a></li>
                 </ul>            
             </div>
@@ -80,10 +80,10 @@
             </div>
 
             <div class="item">
-                <a href="/data">
+                <a href="/erase">
                     <div class="icon">
                         <i class='bx bx-user'></i>
-                        <div class="title">Consultar</div>
+                        <div class="title">Eliminar</div>
                     </div>                    
                 </a>                                  
                 </a>
@@ -124,7 +124,68 @@
 
         <div id="main-container"></div>
 
-    </div>   
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            <h1>Administración de personal </h1>
+            <p>En esta sección puedes actualizar los datos de los usuarios e ingresarlos si pertenecen a la 
+                organización.</p>
+
+            <div class="form-container">
+
+                <form class="form-db">
+                    <h2>Ingresar empleado</h2>
+                    
+                    <label for="rolId">Id rol</label>
+                    <select name="rolId" id="rolId">
+                        <option value="admin">Admin</option>
+                        <option value="vendedor">Vendedor</option>
+                        <option value="inventario">Inventario</option>
+                        <option value="bodega">Bodega</option>
+                    </select>
+                                
+                    <label for="user">Nombre</label>
+                    <input type="text" name="user" id="user" placeholder="Nombre del empleado" required />
+            
+                    <label for="rol">Cargo</label>
+                    <input type="text" name="rol" id="rol" placeholder="Cargo actual" required />
+            
+                    <label for="salary">Salario</label>
+                    <input type="number" name="salary" id="salary" placeholder="Salario" required />
+            
+                    <label for="health">EPS</label>
+                    <select name="health" id="health">
+                        <option value="coomeva">Coomeva</option>
+                        <option value="sanitas">Sanitas</option>
+                        <option value="nueva-eps">Nueva EPS</option>
+                        <option value="salud-total">Salud Total</option>
+                    </select>
+                    
+                    <input type="button" id="btn" value="Agregar">
+                </form>
+
+                <form class="form-db">
+                    <h2>Ingresar vendedor</h2>
+                    
+                    <label for="vendId">Id vendedor</label>
+                    <input type="number" name="vendId" id="vendId" placeholder="Id vendedor" required />
+                                
+                    <label for="user">Nombre</label>
+                    <input type="text" name="user" id="user" placeholder="Nombre del empleado" required />
+            
+                    <label for="direccion">Dirección</label>
+                    <input type="text" name="direccion" id="direccion" placeholder="Dirección" required />
+            
+                    <label for="telefono">Telefono</label>
+                    <input type="text" name="telefono" id="telefono" placeholder="Telefono" required />
+                    
+                    <input type="button" id="btn" value="Agregar">
+                </form>
+            </div>
+        </div>
+    </div>                
+
     
     <script src="sessions/admin.js"></script>
 </body>

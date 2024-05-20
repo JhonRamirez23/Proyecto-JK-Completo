@@ -80,10 +80,10 @@
             </div>
 
             <div class="item">
-                <a href="/data">
+                <a href="/erase">
                     <div class="icon">
                         <i class='bx bx-user'></i>
-                        <div class="title">Consultar</div>
+                        <div class="title">Eliminar</div>
                     </div>                    
                 </a>                                  
                 </a>
@@ -110,21 +110,145 @@
             </div>
 
             <div class="item2">
-                <a href="/inicio">
-                    <div class="icon-out">
-                        <i class='bx bx-log-out'></i>
-                        <input type="button" class="btn" value="Salir">
-                    </div>
-                    
-                </a>                                  
+                <div class="icon-out">
+                    <i class='bx bx-log-out'></i>
+                    <input type="button" class="btn" value="Salir">
+                </div>                                 
             </a>
         </div>
 
     </div>
 
-        <div id="main-container"></div>
+        
 
-    </div>    
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+            <h1>Gestión de usuarios </h1>
+            <p>En esta sección puedes ver los usuarios, administrar productos, consultar ventas y realizar gestión de
+                la empresa.</p>
+
+            <div class="table">
+                <table class="user-box">
+                    <h2>Usuarios Registrados</h2>
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre</th>
+                            <th>Documento</th>
+                            <th>Correo</th>
+                            <th>Actuali.</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usuarios">
+                        <tr>
+                            <td>1</td>
+                            <td>Jhon Ramirez</td>
+                            <td>1130586470</td>
+                            <td>jframirez074@soy.sena.edu.co</td>
+                            <td>Null</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Nicolás Guzman</td>
+                            <td>1234567890</td>
+                            <td>Nicolas_guzman@soy.sena.edu.co</td>
+                            <td>Null</td>
+                        </tr>
+
+                        <tr>
+                            <td>3</td>
+                            <td>Fanny Espinel</td>
+                            <td>0987654321</td>
+                            <td>fespinel@soy.sena.edu.co</td>
+                            <td>Null</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="table2">
+                <table class="empleados">
+                    <h2>Empleados</h2>
+                    <thead>
+                        <tr>
+                            <th>Rol</th>
+                            <th>Nombre</th>
+                            <th>Cargo</th>
+                            <th>Salario</th>
+                            <th>EPS</th>
+                            <th>Ingreso</th>
+                            <th>Actuali.</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usuarios">
+                        <tr>
+                            <td>1</td>
+                            <td>Jhon Ramirez</td>
+                            <td>Admin</td>
+                            <td>6500000</td>
+                            <td>Sanitas</td>
+                            <td>Null</td>
+                            <td>Null</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Nicolás Guzman</td>
+                            <td>Vendedor</td>
+                            <td>6500000</td>
+                            <td>Coomeva</td>
+                            <td>Null</td>
+                            <td>Null</td>
+                        </tr>
+
+                        <tr>
+                            <td>2</td>
+                            <td>Fanny Espinel</td>
+                            <td>Inventario</td>
+                            <td>6500000</td>
+                            <td>Nueva EPS</td>
+                            <td>Null</td>
+                            <td>Null</td>
+                        </tr>
+                        
+                    </tbody>
+
+                </table>
+            </div>
+
+            <div class="table3">
+                <table class="vendedores">
+                    <h2>Vendedores</h2>
+                    <thead>
+                        <tr>
+                            <th>Cod</th>
+                            <th>Nombre</th>
+                            <th>Dirección</th>
+                            <th>Teléfono</th>
+                            <th>Actuali</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="usuarios">
+                        <tr>
+                            <td>jk_vend-1</td>
+                            <td>Nicolás Guzman Hurtado</td>
+                            <td>Av. Siempre Viv 123</td>
+                            <td>315 123 4567</td>
+                            <td>Null</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
     
     <script src="sessions/admin.js"></script>
 </body>

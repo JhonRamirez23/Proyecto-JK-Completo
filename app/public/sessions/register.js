@@ -2,7 +2,6 @@ const errorUsuario = document.getElementsByClassName('error')[0];
 
 document.getElementById('form-container').addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log(e.target.children.user.value)
     const resp = await fetch('http://localhost:4000/api/register', {
         method: 'POST',
         headers: {
@@ -10,7 +9,7 @@ document.getElementById('form-container').addEventListener('submit', async (e) =
         },
         body: JSON.stringify({
             user: e.target.children.user.value,
-            nip: e.target.children.nip.value,
+            documento: e.target.children.documento.value,
             email: e.target.children.email.value,
             password: e.target.children.password.value,
         })
@@ -20,7 +19,7 @@ document.getElementById('form-container').addEventListener('submit', async (e) =
 
         //Muestra el error en formato HTML
         const errorHTML = await resp.text();
-        console.error(errorHTML); //Muestra el mensaje de errror en la consola
+        console.error(errorHTML); //Muestra el mensaje de error en la consola
         return errorUsuario.classList.toggle('hide-text', false);
     } else {
         window.location.href = '/login';

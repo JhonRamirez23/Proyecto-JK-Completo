@@ -2,7 +2,7 @@ const mensajeError = document.getElementsByClassName('error')[0];
 
 document.getElementById('formulario-login').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nip = e.target.children.nip.value;
+    const documento = e.target.children.documento.value;
     const password = e.target.children.password.value;
     const res = await fetch('http://localhost:4000/api/login', {
         method: 'POST',
@@ -10,7 +10,7 @@ document.getElementById('formulario-login').addEventListener('submit', async (e)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            nip, password
+            documento, password
         })
     });
 
