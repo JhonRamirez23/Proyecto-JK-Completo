@@ -4,9 +4,9 @@
 Proyecto de grado para la presentación al instructor, siguiendo las reglas de usabilidad, documentación del proyecto y separación del frontend y backend, siguiendo las recomendaciones dadas por el instructor.
 
 ## Tabla de contenido
-* [Versión][#version]
-* [Uso][#uso]
-* [Colaboración][#colaboracion]
+* [Versión](#version)
+* [Uso](#uso)
+* [Colaboración](#colaboracion)
 
 ## Versión
 Proyecto creado con node.js usando la versión...
