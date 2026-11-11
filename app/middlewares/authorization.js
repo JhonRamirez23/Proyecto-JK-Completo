@@ -80,10 +80,42 @@
 
 // export default rolesPermitidos;
 
-export const isAuthenticated = (req, res, next) => {
-    if (req.cookies.jwt) {
-        return next();
-    } else {
-        res.redirect('/inicio');
-    }
+import authService from '../services/auth.service.js';
+
+async function getAuthenticatedPayload(req) {
+    const token = req.cookies?.jwt;
+    if (!token) return null;
+    return authService.validateToken(token);
 }
+
+export const isAuthenticated = async (req, res, next) => {
+    let payload;
+    try {
+        payload = await getAuthenticatedPayload(req);
+    } catch (err) {
+        return res.status(500).send({ status: 'Error', message: 'Error interno del servidor' });
+    }
+
+    if (!payload) return res.redirect('/inicio');
+    req.auth = payload;
+    return next();
+};
+
+export const isAdmin = async (req, res, next) => {
+    let payload;
+    let cargo;
+    try {
+        payload = await getAuthenticatedPayload(req);
+        if (payload) cargo = await authService.getCargoByDocument(payload.usuario);
+    } catch (err) {
+        return res.status(500).send({ status: 'Error', message: 'Error interno del servidor' });
+    }
+
+    if (!payload) return res.redirect('/inicio');
+    if (cargo !== 'admin') {
+        return res.status(403).send({ status: 'Error', message: 'No tienes permisos para acceder a esta ruta' });
+    }
+
+    req.auth = payload;
+    return next();
+};

@@ -1,7 +1,7 @@
 {
   "name": "proyecto-jk-completo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Proyecto de grado para la gestión de inventario, productos y ventas de una empresa, desarrollado con Node.js, Express y MySQL.",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -18,13 +18,16 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-myconnection": "^1.0.4",
+    "express-rate-limit": "^8.7.1",
     "express-session": "^1.18.0",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.9.7",
     "node-cache": "^5.1.2",
-    "sharp": "^0.33.4"
+    "pg": "^8.23.1",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

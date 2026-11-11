@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 //Importamos el directorio de imágenes
-import crearDirectorioImagenes from '../helpers/fs.js';
+import crearDirectorioImagenes from '../utils/fs.js';
 
 //Llama a la función para crear el directorio "uploads" si no existe.
 crearDirectorioImagenes();

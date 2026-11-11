@@ -16,7 +16,7 @@ body {
     font-family: var(--montserrat);
 }
 
-.forms {
+/* .forms {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -50,7 +50,7 @@ body {
         text-align: center;
     }
 
-}
+} */
 
 .text-container {
     text-align: center;

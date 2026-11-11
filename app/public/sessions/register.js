@@ -1,4 +1,5 @@
 const errorUsuario = document.getElementsByClassName('error')[0];
+const exitoUsuario = document.getElementsByClassName('success')[0];
 
 document.getElementById('form-container').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -8,21 +9,25 @@ document.getElementById('form-container').addEventListener('submit', async (e) =
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            user: e.target.children.user.value,
+            usuario: e.target.children.user.value,
             documento: e.target.children.documento.value,
             email: e.target.children.email.value,
             password: e.target.children.password.value,
         })
     });
 
-    if(!resp.ok) {
-
-        //Muestra el error en formato HTML
-        const errorHTML = await resp.text();
-        console.error(errorHTML); //Muestra el mensaje de error en la consola
-        return errorUsuario.classList.toggle('hide-text', false);
-    } else {
-        window.location.href = '/login';
+    const result = await resp.json();
+    if (!resp.ok) {
+        errorUsuario.textContent = result.message || 'No fue posible completar el registro.';
+        errorUsuario.classList.remove('hide-text');
+        return;
     }
+
+    errorUsuario.classList.add('hide-text');
+    exitoUsuario.textContent = `${result.message}. Redirigiendo al inicio de sesión...`;
+    exitoUsuario.classList.remove('hide-text');
+    window.setTimeout(() => {
+        window.location.href = result.redirect || '/login';
+    }, 1200);
 
 });
