@@ -14,9 +14,14 @@ document.getElementById('formulario-login').addEventListener('submit', async (e)
         })
     });
 
-    if(!res.ok) return mensajeError.classList.toggle('hide-text', false);
-    
     const resJson = await res.json();
+    if (!res.ok) {
+        mensajeError.textContent = resJson.message || 'No fue posible iniciar sesión.';
+        mensajeError.classList.remove('hide-text');
+        return;
+    }
+
+    mensajeError.classList.add('hide-text');
     if (resJson.redirect) {
         window.location.href = resJson.redirect;
     }

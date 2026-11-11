@@ -12,7 +12,7 @@ Proyecto de grado para la presentación al instructor, siguiendo las reglas de u
 Proyecto creado con node.js usando la versión...
 
 ## Uso
-Proyecto que usa frontend con HTML, CSS y JavaScript; y backend creado con la versión ES6, haciendo uso del modelo MVC para el CRUD de usuarios guardados en la base de datos MySQL.
+Proyecto con frontend estático en HTML, CSS y JavaScript, y backend Node.js con Express y módulos ESM. PostgreSQL es la tecnología objetivo de persistencia; el código actual configura un pool PostgreSQL y contiene un esquema PostgreSQL.
 
 ## Colaboración
 * Nicolás Guzmán Hurtado - Desarrollador backend

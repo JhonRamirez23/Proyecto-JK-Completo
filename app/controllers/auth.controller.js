@@ -1,145 +1,101 @@
-import express from 'express';
-const app = express();
+// Controlador de autenticación — adaptador HTTP.
+// Capa: controllers. Solo traduce solicitudes HTTP a llamadas del service y convierte resultados en respuestas.
+// No ejecuta consultas SQL directamente.
 
-//Se importa bcrypt para encriptar la contraseña
-import bcrypt from 'bcryptjs';
-
-//Se importa la sesión
-import session from 'express-session';
-
-//Importamos el JWT desde helpers
-import generarToken from '../helpers/utils.js';
-
-//Prueba para traer la config de la BD
-import getConnection from '../models/mysql/db.js';
-
-//Se importa la encriptación de los datos
 import dotenv from 'dotenv';
 dotenv.config();
 
-//Se configura la sesión.
-app.use(session({
-    secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === 'production'}
-}));
+import authSvc from '../services/auth.service.js';
 
-async function login(req, res){
-    const documento = req.body.documento;
-    const password = req.body.password;
-    
-    //Validación de documento y contraseña
-    if (!documento || !password) {
-        return res.status(400).send({ status: "Error", message: "Los campos están incompletos" });
-    }
-    
-    //Verifica si el usuario existe en la BD
+// Login: delega la lógica de negocio al service.
+async function login(req, res) {
+    const { documento, password } = req.body ?? {};
     try {
-        const conn = await getConnection(); //Conector a la BD
-        const [usuarioExiste] = await conn.promise().query('SELECT * FROM usuarios WHERE documento = ?', [documento]);
-
-        if (usuarioExiste.length === 0) {
-            return res.status(400).send({ status: "Error", message: "Usuario no existe"});
-        }
-
-        //Ingresa en una constante la contraseña para usarla en la encriptación.
-        const hashpassword = usuarioExiste[0].password;
-
-        //Verifica que la contraseña encriptada sea correcta.
-        const loginCorrecto = await bcrypt.compare(password, hashpassword);
-        
-        //Valida el ingreso
-        if (!loginCorrecto) {
-            return res.status(401).send({ status: "Error", message: "Usuario o contraseña incorrecta" });
-        }
-
-        //Si la autenticación es exitosa, consultamos la tabla empleados para obtener el rol del usuario
-        // const [rolEmpleado] = await conn.promise().query('SELECT cargo FROM empleados WHERE cargo = ?', [usuarioExiste[0].id]); 
-        // if (rolEmpleado.length === 0) {
-        //     return res.status(400).send({ status: "Error", message: "No se encontraron datos del empleado"});
-        // }
-
-        //Si la autenticación es exitosa, creamos el JWT.
-        const token = await generarToken(documento);
-
-        //Configuramos la cookie con el token y una duración de 1 hora
-        const cookieOptions = {
-            httpOnly: true,
-            secure: true,
-            maxAge: process.env.JWT_COOKIE_EXPIRES * 60 * 60 * 1000,
-            path: '/'
-        };
-
-        //Configuramos la cookie en la respuesta
-        res.cookie('jwt', token, cookieOptions);
-
-        res.send({ status: "OK", redirect: '/admin'});
+        const result = await authSvc.login(documento, password);
+        res.cookie('jwt', result.token, cookieOptions());
+        res.send({ status: 'OK', redirect: result.redirect });
     } catch (err) {
+        if (err.message === 'Los campos están incompletos') {
+            return res.status(400).send({ status: 'Error', message: 'Completa todos los campos requeridos.' });
+        }
+        if (err.message === 'Usuario o contraseña incorrecta') {
+            return res.status(401).send({ status: 'Error', message: 'Documento o contraseña incorrectos.' });
+        }
+        if (err.message === 'El usuario no tiene un rol válido asignado') {
+            return res.status(403).send({
+                status: 'Error',
+                message: 'Tu cuenta no tiene un único rol válido asignado. Contacta a un administrador.'
+            });
+        }
         console.log("Error al procesar la solicitud");
-        res.status(500).send({ status: "Error", message: "Error interno del servidor"});
-    }   
-}
-
-/*
-async function logout(req, res) {
-    try {
-        
+        res.status(500).send({ status: "Error", message: "Error interno del servidor" });
     }
 }
-*/
 
+// Logout: mantiene el mismo comportamiento (limpiar cookie y redirigir).
+async function logout(req, res) {
+    const token = req.cookies?.jwt;
+    if (token) {
+        try {
+            await authSvc.revokeToken(token);
+        } catch (err) {
+            console.error('Error al revocar el token de cierre de sesión:', err);
+            return res.status(500).send({ status: 'Error', message: 'No se pudo cerrar sesión' });
+        }
+    }
+    res.clearCookie('jwt', { path: '/', httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.send({ status: "OK", redirect: '/login' });
+}
+
+async function session(req, res) {
+    try {
+        const payload = await authSvc.validateToken(req.cookies?.jwt);
+        if (!payload) {
+            return res.send({ status: 'OK', authenticated: false, usuario: null });
+        }
+        return res.send({ status: 'OK', authenticated: true, usuario: payload.usuario });
+    } catch (err) {
+        console.error('Error al validar la sesión:', err.message);
+        res.status(500).send({ status: "Error", message: "Error interno de la servidor" });
+    }
+}
+
+function cookieOptions() {
+    return {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: process.env.JWT_COOKIE_EXPIRES * 60 * 60 * 1000,
+        path: '/'
+    };
+}
+
+// Register: delega la creación y validaciones al service.
 async function register(req, res) {
-    const usuario = req.body.user;
-    const documento = req.body.documento;
-    const email = req.body.email;
-    const password = req.body.password;
-
-    //Validación de datos
-    if (!usuario || !email || !password || !documento) {
-        return res.status(400).send({
-            status: "Error", message: "Los campos están incompletos"
+    const userData = req.body ?? {};
+    try {
+        await authSvc.register(userData);
+        res.send({ status: 'OK', message: 'Registro exitoso', redirect: '/login' });
+    } catch (err) {
+        if (err.message === 'Los campos están incompletos') {
+            return res.status(400).send({ status: 'Error', message: 'Completa todos los campos requeridos.' });
+        }
+        if (err.message === 'El usuario o el correo ya existe') {
+            return res.status(409).send({
+                status: 'Error',
+                message: 'Ya existe un usuario con ese nombre de usuario o correo electrónico.'
+            });
+        }
+        console.error('Error al registrar el usuario:', err);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'No fue posible completar el registro. Solicita a un administrador que gestione tu acceso.'
         });
     }
-
-    //Establece conn como conector de consultas
-    const conn = getConnection();
-
-    ////Verifica si el email ya existe en la BD
-    const [usuarioExistente] = await conn.promise().query('SELECT * FROM usuarios WHERE email = ?', [email]);
-    if (usuarioExistente.length > 0 ) {
-        return res.status(400).send({ status: "Error", message: "El email ya existe" });
-    }
-
-    /*
-        En código de la consulta, utilizamos conn.promise().query() en lugar de conn.query() para realizar 
-        consultas SQL de forma asíncrona y utilizar await para esperar la respuesta de la base de datos. 
-        Además, utilizamos un bloque try-catch para manejar los errores de forma adecuada.
-    */
-
-    //Si no existe, procede con el registro
-
-    //Aquí se encripta las contraseñas
-    const salt = await bcrypt.genSalt(10);
-    const hashpassword = await bcrypt.hash(password, salt);
-
-    const nuevoUsuario = {
-        usuario,
-        documento,
-        email,
-        password: hashpassword
-    }
-
-    conn.query('INSERT INTO usuarios SET ?', nuevoUsuario, async(err, rows) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send({ status: "Error", message: "Error al insertar el usuario en la BD" });
-        }
-        res.redirect('/login');
-    });
 }
 
 export const methods = {
     login,
     register,
-}
+    logout,
+    session
+};

@@ -1,10 +1,10 @@
 # Archivos que no quiero tener control de version
-A tener en cuenta para el proyecto.txt
-
+Guia de desarrollo.txt
 node_modules/
-
 .env
-
+.kilo
+docs/
 Mockups Gerencias.pdf
-
 Archivos Mockups JK
+AGENTS.md
+.vscode/
