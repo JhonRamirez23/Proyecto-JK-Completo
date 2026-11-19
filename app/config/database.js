@@ -13,7 +13,9 @@ const dbConfig = {
   port: Number(config.db.port),
   database: config.db.database,
   // El proveedor remoto exige TLS en Production y Preview; se conserva el modo local.
-  ssl: useSsl ? { rejectUnauthorized: true } : false,
+  ssl: useSsl
+    ? { ca: config.db.sslCa, rejectUnauthorized: true }
+    : false,
 };
 
 const pool = new Pool(dbConfig);

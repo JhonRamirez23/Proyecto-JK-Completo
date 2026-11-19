@@ -19,5 +19,6 @@ export const config = {
     password: process.env.DB_PASSWORD ?? process.env.PGPASSWORD ?? '',
     port: Number(process.env.DB_PORT || process.env.PGPORT || 5432),
     database: process.env.DB_NAME || process.env.PGDATABASE || 'cambiar_bd',
+    sslCa: process.env.SUPABASE_DB_CA_CERT?.replace(/\\n/g, '\n') || undefined,
   },
 };
