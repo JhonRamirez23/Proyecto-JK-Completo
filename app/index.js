@@ -13,8 +13,8 @@ import cors from 'cors';
 //Manejo de archivos
 import fs from 'fs';
 
-//Importa la función que crea el directorio de imágenes
-import helperImage from './utils/fs.js';
+// Crea el almacenamiento local solo al arrancar el servidor de desarrollo.
+import crearDirectorioImagenes from './utils/fs.js';
 
 //Importamos el módulo storage de multer
 import { upload } from './controllers/img.controller.js';
@@ -27,7 +27,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 //Se importan los métodos que vienen de auth.controllers.js
-import { isAuthenticated as auth, isAdmin } from './middlewares/authorization.js';
+import { isAdmin } from './middlewares/authorization.js';
 
 //Rutas
 import authRoutes from './routes/auth.routes.js';
@@ -36,14 +36,7 @@ import authRoutes from './routes/auth.routes.js';
 //path.dirname se usa para crear carpetas estáticas dentro del proyecto
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-//Se configura el servidor
-app.set('port', 4000);
-app.listen(app.get('port'));
-console.log('Servidor escuchando en puerto', app.get('port'));
-
-// Configura el servidor para servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'uploads')));
+// El frontend React se sirve desde su propio despliegue; Express conserva solo la API.
 app.use(cookieParser());
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -59,29 +52,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // Montar rutas de autenticación
 app.use(authRoutes);
-
-//Rutas públicas
-app.get('/inicio', (req, res) => { res.sendFile(__dirname + '/pages/index.html'); })
-app.get('/login', (req, res) => { res.sendFile(__dirname + '/pages/login.html'); })
-app.get('/register', (req, res) => { res.sendFile(__dirname + '/pages/register.html'); })
-
-//Rutas del módulo Gerencias
-app.get('/admin', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/admin.html'); })
-app.get('/update-images', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/images.html'); })
-app.get('/add', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/add.html'); })
-app.get('/erase', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/erase.html'); })
-app.get('/updates', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/update.html'); })
-app.get('/sales', auth, (req, res) => { res.sendFile(__dirname + '/pages/admin/sales.html'); })
-
-//Rutas del módulo Vendedor
-app.get('/sales-employes', auth, (req, res) => { res.sendFile(__dirname + '/pages/employes/employes.html'); })
-app.get('/products', auth, (req, res) => { res.sendFile(__dirname + '/pages/employes/products.html'); })
-
-//Rutas del módulo Clientes
-app.get('/clients', auth, (req, res) => { res.sendFile(__dirname + '/pages/sales/clients.html'); })
-
-//Rutas del módulo Inventario
-app.get('/inventory', auth, (req, res) => { res.sendFile(__dirname + '/pages/inventory/inventory.html'); })
 
 //Post para manejar la carga de imágenes
 app.post('/update-images', isAdmin, upload.single('file'), (req, res) => {
@@ -140,3 +110,16 @@ app.get('/uploads/:imageName', (req, res) => {
         });
     }
 });
+
+export default app;
+
+// Al importar la aplicación (por ejemplo, desde Vercel) no se abre un puerto.
+// El listener solo se inicia cuando este archivo es el punto de entrada local.
+const entryFile = process.argv[1] ? path.resolve(process.argv[1]) : '';
+if (entryFile === fileURLToPath(import.meta.url)) {
+    crearDirectorioImagenes();
+    const port = Number(process.env.PORT) || 4000;
+    app.listen(port, () => {
+        console.log('Servidor escuchando en puerto', port);
+    });
+}
