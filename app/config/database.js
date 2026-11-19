@@ -9,6 +9,8 @@ const dbConfig = {
   password: String(config.db.password ?? ''),
   port: Number(config.db.port),
   database: config.db.database,
+  // El proveedor de producción exige TLS; se conserva el modo actual en desarrollo.
+  ssl: config.nodeEnv === 'production' ? { rejectUnauthorized: true } : false,
 };
 
 const pool = new Pool(dbConfig);
